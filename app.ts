@@ -6,7 +6,7 @@ import swaggerUi from "swagger-ui-express";
 import slowDown from "express-slow-down";
 import mongoose from "mongoose";
 import morgan from "morgan";
-import { ErrorHandler } from "./controllers";
+import { ErrorHandler } from "./services";
 import { dbConnect } from "./db/";
 import router from "./router";
 import { swaggerConfig } from "./config";
