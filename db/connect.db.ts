@@ -3,12 +3,7 @@ import { MongoURI } from "../config";
 import { dbDebug } from "../debug";
 
 export const dbConnect = () =>
-  connect(MongoURI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
-  })
+  connect(MongoURI)
     .then(() => {
       dbDebug("Successfully connected to database");
     })
