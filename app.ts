@@ -4,12 +4,18 @@ import helmet from "helmet";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import slowDown from "express-slow-down";
+import mongoose from "mongoose";
+import morgan from "morgan";
 import { ErrorHandler } from "./controllers";
 import { dbConnect } from "./db/";
 import router from "./router";
 import { swaggerConfig } from "./config";
+import { dbDebug, httpDebug } from "./debug";
 
 dbConnect();
+mongoose.set("debug", (collectionName, method, query) => {
+  dbDebug(`${collectionName}.${method}`, JSON.stringify(query));
+});
 
 declare global {
   namespace Express {
@@ -29,6 +35,11 @@ const speedLimiter = slowDown({
   // etc.
 });
 const app = express();
+app.use(
+  morgan("dev", {
+    stream: { write: (msg) => httpDebug(msg.slice(0, msg.length - 1)) },
+  })
+);
 app.use(speedLimiter);
 app.use(cors());
 app.use(helmet());
@@ -43,5 +54,5 @@ const swaggerSpec = swaggerJSDoc(swaggerConfig);
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(ErrorHandler);
-``;
+
 export default app;
