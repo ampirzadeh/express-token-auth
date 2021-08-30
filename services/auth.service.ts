@@ -1,6 +1,6 @@
 import { hash, compare } from "bcrypt";
 import { sign as signJWT } from "jsonwebtoken";
-import createError from "http-errors";
+import createHttpError from "http-errors";
 import { check } from "express-validator";
 import { User } from "../db";
 import { httpDebug } from "../debug";
@@ -113,7 +113,7 @@ export const EnterUser: Service = {
         usr = await User.create({ email, password: encryptedPassword });
       }
       if (!(await compare(password, usr.password)))
-        throw new createError.Forbidden("Wrong password");
+        throw new createHttpError.Forbidden("Wrong password");
 
       const token = signJWT({ email }, tokenKey, {
         expiresIn: "30d",
