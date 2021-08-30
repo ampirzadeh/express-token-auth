@@ -94,7 +94,7 @@ export const EnterUser: Service = {
       .isStrongPassword(PasswordValidation)
       .withMessage(
         // ! description should be given on frontend and it should match PasswordValidation (in config.ts)
-        `Please provide a password that matches the given description`
+        "Please provide a password that matches the given description"
       ),
   ],
   main: async (req, res, next) => {
@@ -118,16 +118,10 @@ export const EnterUser: Service = {
       const token = signJWT({ email }, tokenKey, {
         expiresIn: "30d",
       });
-      await User.updateOne(
-        {
-          _id: usr._id,
-        },
-        {
-          token,
-        }
-      );
+      usr.token = token;
+      usr.save();
 
-      return res.status(200).send({ token });
+      return res.send({ token });
     } catch (error) {
       httpDebug(error);
       return next(error);
