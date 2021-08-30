@@ -36,10 +36,8 @@ const speedLimiter = slowDown({
 });
 const app = express();
 app.use(
-  morgan("dev", {
-    stream: { write: (msg) => httpDebug(msg.slice(0, msg.length - 1)) },
-  })
-);
+  morgan('tiny', { stream: { write: (msg) => httpDebug(msg.trimEnd()) } })
+)
 app.use(speedLimiter);
 app.use(cors());
 app.use(helmet());

@@ -71,30 +71,32 @@ import { Service } from ".";
  *               valid_password:
  *                 summary: An example of invalid password
  *                 value:
- *                   message: Please provide a password that matches the given description
+ *                   message: InvalidPassword
  *               invalid_email:
  *                 summary: An example of invalid email
  *                 value:
- *                   message: Please provide a valid email
+ *                   message: InvalidEmail
  *               wrong_password:
  *                 summary: An example of wrong password
  *                 value:
- *                   message: Wrong password
+ *                   message: WrongPassword
  */
 export const EnterUser: Service = {
   validation: [
     check("email")
       .trim()
+      .exists()
       .notEmpty()
       .isEmail()
-      .withMessage("Please provide a valid email"),
+      .withMessage("InvalidEmail"),
     check("password")
       .trim()
+      .exists()
       .notEmpty()
       .isStrongPassword(PasswordValidation)
       .withMessage(
         // ! description should be given on frontend and it should match PasswordValidation (in config.ts)
-        "Please provide a password that matches the given description"
+        "InvalidPassword"
       ),
   ],
   main: async (req, res, next) => {
@@ -113,7 +115,7 @@ export const EnterUser: Service = {
         usr = await User.create({ email, password: encryptedPassword });
       }
       if (!(await compare(password, usr.password)))
-        throw new createHttpError.Forbidden("Wrong password");
+        throw new createHttpError.Forbidden("WrongPassword");
 
       const token = signJWT({ email }, tokenKey, {
         expiresIn: "30d",
