@@ -1,14 +1,15 @@
 import { Router } from 'express'
-import { EnterUser, ValidationErrorHandler } from './services'
-import { auth } from './middlewares'
+import { AuthenticationService, ValidationErrorHandler } from './services'
 const router = Router()
 
 router.post(
   '/enter',
-  EnterUser.validation,
+  AuthenticationService.validation,
   ValidationErrorHandler,
-  EnterUser.main
+  AuthenticationService.main
 )
-router.get('/', auth, (req, res) => res.send(JSON.stringify(req.user)))
+router.get('/', AuthenticationService.middleware, (req, res) =>
+  res.send(JSON.stringify(req.user))
+)
 
 export default router

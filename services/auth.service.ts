@@ -6,6 +6,7 @@ import { User } from '../db'
 import { httpDebug } from '../debug'
 import { PasswordValidation, tokenKey } from '../config'
 import { Service } from '.'
+import { verify } from 'jsonwebtoken'
 
 /**
  * @swagger
@@ -81,7 +82,7 @@ import { Service } from '.'
  *                 value:
  *                   message: WrongPassword
  */
-export const EnterUser: Service = {
+export const AuthenticationService: Service = {
   validation: [
     check('email')
       .trim()
@@ -127,6 +128,21 @@ export const EnterUser: Service = {
     } catch (error) {
       httpDebug(error)
       return next(error)
+    }
+  },
+  middleware: async (req, res, next) => {
+    const token: string =
+      req.headers['x-access-token']?.toString() ||
+      req.headers.authorization ||
+      ''
+
+    try {
+      const decoded = verify(token.replace('Bearer ', ''), tokenKey)
+      req.user = JSON.parse(JSON.stringify(decoded)).email
+      return next()
+    } catch (error) {
+      httpDebug(error)
+      return next(new createHttpError.Unauthorized())
     }
   },
 }
