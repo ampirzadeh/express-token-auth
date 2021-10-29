@@ -4,9 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node -r dotenv/config index.ts",
     "dev": "nodemon -r dotenv/config index.ts",
-    "prettify": "prettier -w ."
+    "prettify": "prettier -w .",
+    "build": "ts-node build.ts"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
@@ -20,6 +20,7 @@
     "@types/node": "^16.11.6",
     "@types/swagger-jsdoc": "^6.0.1",
     "@types/swagger-ui-express": "^4.1.3",
+    "esbuild": "^0.13.10",
     "nodemon": "^2.0.14",
     "prettier": "^2.4.1",
     "ts-node": "^10.4.0",
