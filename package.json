@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon -r dotenv/config index.ts",
-    "prettify": "prettier -w .",
+    "prettify": "prettier -w . --ignore-path .gitignore",
     "build": "ts-node build.ts"
   },
   "devDependencies": {
