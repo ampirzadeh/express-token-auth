@@ -1,1 +1,1 @@
-export { auth } from "./auth.middleware";
+export { auth } from './auth.middleware'

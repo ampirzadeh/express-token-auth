@@ -1,9 +1,9 @@
-import { Document, model, Schema } from "mongoose";
+import { Document, model, Schema } from 'mongoose'
 
 export interface IUser extends Document {
-  email: string;
-  password: string;
-  token: string;
+  email: string
+  password: string
+  token: string
 }
 
 const UserSchema = new Schema(
@@ -22,6 +22,6 @@ const UserSchema = new Schema(
   {
     timestamps: true,
   }
-);
+)
 
-export default model<IUser>("user", UserSchema);
+export default model<IUser>('user', UserSchema)

@@ -1,11 +1,11 @@
-import { hash, compare } from "bcrypt";
-import { sign as signJWT } from "jsonwebtoken";
-import createHttpError from "http-errors";
-import { check } from "express-validator";
-import { User } from "../db";
-import { httpDebug } from "../debug";
-import { PasswordValidation, tokenKey } from "../config";
-import { Service } from ".";
+import { hash, compare } from 'bcrypt'
+import { sign as signJWT } from 'jsonwebtoken'
+import createHttpError from 'http-errors'
+import { check } from 'express-validator'
+import { User } from '../db'
+import { httpDebug } from '../debug'
+import { PasswordValidation, tokenKey } from '../config'
+import { Service } from '.'
 
 /**
  * @swagger
@@ -83,50 +83,50 @@ import { Service } from ".";
  */
 export const EnterUser: Service = {
   validation: [
-    check("email")
+    check('email')
       .trim()
       .exists()
       .notEmpty()
       .isEmail()
-      .withMessage("InvalidEmail"),
-    check("password")
+      .withMessage('InvalidEmail'),
+    check('password')
       .trim()
       .exists()
       .notEmpty()
       .isStrongPassword(PasswordValidation)
       .withMessage(
         // ! description should be given on frontend and it should match PasswordValidation (in config.ts)
-        "InvalidPassword"
+        'InvalidPassword'
       ),
   ],
   main: async (req, res, next) => {
     try {
-      const { email = "", password = "" } = req.body as {
-        email: string;
-        password: string;
-      };
+      const { email = '', password = '' } = req.body as {
+        email: string
+        password: string
+      }
 
-      email.toLowerCase();
+      email.toLowerCase()
 
-      let usr = await User.findOne({ email });
+      let usr = await User.findOne({ email })
 
       if (!usr) {
-        const encryptedPassword = await hash(password, 10);
-        usr = await User.create({ email, password: encryptedPassword });
+        const encryptedPassword = await hash(password, 10)
+        usr = await User.create({ email, password: encryptedPassword })
       }
       if (!(await compare(password, usr.password)))
-        throw new createHttpError.Forbidden("WrongPassword");
+        throw new createHttpError.Forbidden('WrongPassword')
 
       const token = signJWT({ email }, tokenKey, {
-        expiresIn: "30d",
-      });
-      usr.token = token;
-      usr.save();
+        expiresIn: '30d',
+      })
+      usr.token = token
+      usr.save()
 
-      return res.send({ token });
+      return res.send({ token })
     } catch (error) {
-      httpDebug(error);
-      return next(error);
+      httpDebug(error)
+      return next(error)
     }
   },
-};
+}

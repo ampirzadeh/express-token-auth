@@ -1,26 +1,26 @@
-import express, { json } from "express";
-import cors from "cors";
-import helmet from "helmet";
-import swaggerJSDoc from "swagger-jsdoc";
-import swaggerUi from "swagger-ui-express";
-import slowDown from "express-slow-down";
-import mongoose from "mongoose";
-import morgan from "morgan";
-import { ErrorHandler } from "./services";
-import { dbConnect } from "./db/";
-import router from "./router";
-import { swaggerConfig } from "./config";
-import { dbDebug, httpDebug } from "./debug";
+import express, { json } from 'express'
+import cors from 'cors'
+import helmet from 'helmet'
+import swaggerJSDoc from 'swagger-jsdoc'
+import swaggerUi from 'swagger-ui-express'
+import slowDown from 'express-slow-down'
+import mongoose from 'mongoose'
+import morgan from 'morgan'
+import { ErrorHandler } from './services'
+import { dbConnect } from './db/'
+import router from './router'
+import { swaggerConfig } from './config'
+import { dbDebug, httpDebug } from './debug'
 
-dbConnect();
-mongoose.set("debug", (collectionName, method, query) => {
-  dbDebug(`${collectionName}.${method}`, JSON.stringify(query));
-});
+dbConnect()
+mongoose.set('debug', (collectionName, method, query) => {
+  dbDebug(`${collectionName}.${method}`, JSON.stringify(query))
+})
 
 declare global {
   namespace Express {
     interface Request {
-      user: string;
+      user: string
     }
   }
 }
@@ -33,24 +33,24 @@ const speedLimiter = slowDown({
   // request # 102 is delayed by 1000ms
   // request # 103 is delayed by 1500ms
   // etc.
-});
-const app = express();
+})
+const app = express()
 app.use(
   morgan('tiny', { stream: { write: (msg) => httpDebug(msg.trimEnd()) } })
 )
-app.use(speedLimiter);
-app.use(cors());
-app.use(helmet());
-app.use(json());
+app.use(speedLimiter)
+app.use(cors())
+app.use(helmet())
+app.use(json())
 app.use((req, _, next) => {
-  req.user = "";
-  next();
-});
-app.use("/", router);
+  req.user = ''
+  next()
+})
+app.use('/', router)
 
-const swaggerSpec = swaggerJSDoc(swaggerConfig);
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+const swaggerSpec = swaggerJSDoc(swaggerConfig)
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
-app.use(ErrorHandler);
+app.use(ErrorHandler)
 
-export default app;
+export default app

@@ -1,14 +1,14 @@
-import { Router } from "express";
-import { EnterUser, ValidationErrorHandler } from "./services";
-import { auth } from "./middlewares";
-const router = Router();
+import { Router } from 'express'
+import { EnterUser, ValidationErrorHandler } from './services'
+import { auth } from './middlewares'
+const router = Router()
 
 router.post(
-  "/enter",
+  '/enter',
   EnterUser.validation,
   ValidationErrorHandler,
   EnterUser.main
-);
-router.get("/", auth, (req, res) => res.send(JSON.stringify(req.user)));
+)
+router.get('/', auth, (req, res) => res.send(JSON.stringify(req.user)))
 
-export default router;
+export default router
